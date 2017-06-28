@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+       <script>
+              <generate template="app.properties.vm" destfile="WEB-INF/classes/properties/app.properties" charset="UTF-8" />
+       </script>
+</config>

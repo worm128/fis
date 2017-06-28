@@ -1,0 +1,36 @@
+
+logLevel=${logLevel}
+logRoot=${logRoot}
+
+#连接池配置
+dbcp.driverClassName=${dbcp_driverClassName}
+dbcp.url=${dbcp_url}
+dbcp.username=${dbcp_username}
+dbcp.password=${dbcp_password}
+dbcp.initialSize=${dbcp_initialSize}
+dbcp.maxActive=${dbcp_maxActive}
+dbcp.minIdle=${dbcp_minIdle}
+dbcp.maxIdle=${dbcp_maxIdle}
+dbcp.maxWait=${dbcp_maxWait}
+dbcp.testOnBorrow=${dbcp_testOnBorrow}
+dbcp.testWhileIdle=${dbcp_testWhileIdle}
+dbcp.timeBetweenEvictionRunsMillis=${dbcp_timeBetweenEvictionRunsMillis}
+dbcp.numTestsPerEvictionRun=${dbcp_numTestsPerEvictionRun}
+dbcp.minEvictableIdleTimeMillis=${dbcp_minEvictableIdleTimeMillis}
+dbcp.validationQuery=${dbcp_validationQuery}
+dbcp.removeAbandoned=${dbcp_removeAbandoned}
+dbcp.removeAbandonedTimeout=${dbcp_removeAbandonedTimeout}
+dbcp.key=${dbcp_key}
+#查询余额速率控制
+operator_RangeTimeStr = ${operator_RangeTimeStr}
+operator_CheckTimesStr =${operator_CheckTimesStr}
+
+#查询订单速率控制
+order_RangeTimeStr = ${order_RangeTimeStr}
+order_CheckTimesStr =${order_CheckTimesStr}
+
+#keep有效期（分）
+keep_validity =${keep_validity}
+
+#外部订单号+平台号 有效期（分）
+plat_outOrderNo_validity =${plat_outOrderNo_validity}

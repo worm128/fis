@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!--数据源 -->
+	<bean id="songDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${dbcp.driverClassName}" />
+		<property name="url" value="${dbcp.url}" />
+		<property name="username" value="${dbcp.username}" />
+		<property name="password" value="${dbcp.password}" />
+		<property name="initialSize" value="${dbcp.initialSize}" />
+		<property name="maxActive" value="${dbcp.maxActive}" />
+		<property name="minIdle" value="${dbcp.minIdle}" />
+		<property name="maxIdle" value="${dbcp.maxIdle}" />
+		<property name="maxWait" value="${dbcp.maxWait}" />
+		<property name="testOnBorrow" value="${dbcp.testOnBorrow}" />
+		<property name="testWhileIdle" value="${dbcp.testWhileIdle}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${dbcp.timeBetweenEvictionRunsMillis}" />
+		<property name="numTestsPerEvictionRun" value="${dbcp.numTestsPerEvictionRun}" />
+		<property name="minEvictableIdleTimeMillis" value="${dbcp.minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<property name="removeAbandoned" value="${dbcp.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${dbcp.removeAbandonedTimeout}" />
+	</bean>
+	<!--mybatis数据库会话 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--数据源 -->
+		<property name="dataSource" ref="songDataSource"/>
+		<!--mybatis全局开关配置 -->
+		<property name="configLocation" value="classpath:/spring/mybatis-set.xml"/>
+		<!--加载mybatis的xml脚本文件 -->
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:mapper/*Mapper.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!--mybatis数据接口扫描 -->
+	<bean id="scannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+		<property name="basePackage" value="com.fis.web.modules.songmain.db.mapping"/>
+	</bean>
+</beans>

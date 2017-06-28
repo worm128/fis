@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:consumer lazy="true" check="false"  timeout="30000" retries="0"  filter="portalService" version="1.0.0"   />
+    <dubbo:consumer id="trsConsum" lazy="true" check="false"  timeout="20000" retries="0"  filter="portalService" default="false"  version="1.0.0"  />
+    <dubbo:consumer id="queryConsum" lazy="true" check="false"  timeout="50000" retries="0"  filter="portalService" default="false"  version="1.0.0" />
+    <dubbo:consumer id="cifQueryConsum" lazy="true" check="false"  timeout="50000" retries="0"  filter="portalService" default="false" />
+
+    <!--<dubbo:registry address="${zookeeper.address}" id="default" />-->
+    <!--<dubbo:registry address="${cif.zookeeper.address}" id="cif" />-->
+
+    <!--操作日志插入-->
+    <!--<dubbo:reference id="transLogService" interface="com.bestpay.pc.persistence.service.TransLogService" consumer="trsConsum" />-->
+    <!--账户查询 迁移api-->
+    <dubbo:reference  id="acctQueryService" interface="com.bestpay.accountsystem.query.service.AccountQueryService" consumer="queryConsum"/>
+    <!--代理商转账 迁移api-->
+    <dubbo:reference  id="transferService" interface="com.bestpay.bppe.pec.service.peopleLivelihood.acct.TransferService" consumer="queryConsum"/>
+</beans>

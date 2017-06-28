@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+
+
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+   		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+	<!-- spring扫包 -->
+	<context:component-scan base-package="com.fis.web.modules.songmain.controller"/>
+	<!--<mvc:default-servlet-handler/>-->
+    <!-- 开启spring mvc注解 -->
+	<mvc:annotation-driven
+		content-negotiation-manager="contentNegotiationManager" />
+	<!-- spring mvc多视图解析配置实例 -->
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false" />
+		<property name="favorParameter" value="false" />
+		<property name="ignoreAcceptHeader" value="false" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="atom" value="application/atom+xml;charset=UTF-8" />
+				<entry key="html" value="text/html;charset=UTF-8" />
+				<entry key="json" value="application/json;charset=UTF-8" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- spring扫包 -->
+	<!--<context:component-scan base-package="com.fis.web"/>-->
+
+	<!-- aop切面 -->
+	<!--<aop:aspectj-autoproxy/>-->
+	<!--配置注解读取-->
+	<!--<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+		<!--<property name="locations">-->
+			<!--<list>-->
+				<!--<value>classpath:/properties/app.properties</value>-->
+			<!--</list>-->
+		<!--</property>-->
+	<!--</bean>-->
+	<!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">-->
+		<!--<property name="properties" ref="configProperties" />-->
+	<!--</bean>-->
+</beans>
