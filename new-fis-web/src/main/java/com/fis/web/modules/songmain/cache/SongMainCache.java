@@ -5,11 +5,13 @@ import com.fis.web.init.threadwork.AppAction;
 import com.fis.web.modules.songmain.db.impl.MyBatisDaoImpl;
 import com.fis.web.modules.songmain.model.SongMain;
 import com.fis.web.modules.songmain.model.SongMainGroup;
+import com.fis.web.redis.base.JedisExecService;
+import com.fis.web.redis.util.JsonSerializer;
 import com.fis.web.tools.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,6 +19,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SongMainCache {
 
+    private static int cacheType = 2;  //1.本地缓存 2.redis缓存
+    private static String songMainkey = "SongMainvv";
     private static List<SongMain> SongMainList = new ArrayList<SongMain>();
 
     private static HashMap<String, Integer[]> _listIndex = new HashMap<String, Integer[]>();
@@ -25,8 +29,11 @@ public class SongMainCache {
     // 锁对象
     private final static ReentrantLock lock = new ReentrantLock();
 
-    @Resource
+    @Autowired
     private MyBatisDaoImpl myBatisDaoImpl;
+
+    @Autowired
+    private JedisExecService jedisExecService;
 
     public SongMainCache() {
 
@@ -64,9 +71,18 @@ public class SongMainCache {
     }
 
     public void killCache() {
-        SongMainList.clear();
+        if (cacheType == 1) {
+            //清空本地缓存
+            SongMainList.clear();
+        } else {
+            //清空redis缓存
+            jedisExecService.lpush(songMainkey, null);
+        }
+
+        //本地索引缓存
         _listRows.clear();
         _listIndex.clear();
+        //gc回收
         System.gc();
     }
 
@@ -78,9 +94,21 @@ public class SongMainCache {
                                      String SongName, String sortDirection, String sortExpression) {
         Integer[] index = null;
         Integer rows = 0;
+        Boolean isExists = false;
+        List<SongMain> SongMainList_Cache = null;
+
+        if (cacheType == 1) {
+            //本地静态变量
+            if (SongMainList == null || SongMainList.size() <= 0) {
+                isExists = false;
+            }
+        } else {
+            //redis缓存
+            isExists = jedisExecService.exists(songMainkey);
+        }
 
         // 整表没有数据
-        if (SongMainList == null || SongMainList.size() <= 0) {
+        if (!isExists) {
             SongMainGroup smg = new SongMainGroup();
             smg.SongMainList = new ArrayList<SongMain>();
             return smg;
@@ -96,7 +124,23 @@ public class SongMainCache {
         if (index != null && index.length > 0) {
             rows = _listRows.get(rowsKey);
         } else {
-            index = GetListIndex(SongMainList, SongName, sortDirection,
+            SongMainList_Cache = new ArrayList<SongMain>();
+            if (cacheType == 1) {
+                //本地静态变量
+                SongMainList_Cache = SongMainList;
+            } else {
+                //SongMainList_Cache = (List<SongMain>) jedisExecService.findInfoByIdForObj(songMainkey, ArrayList.class, SongMain.class);
+                //redis缓存
+                List<String> rangeList = jedisExecService.lrange(songMainkey, 0, 99999);
+                JsonSerializer jsonSerializer = new JsonSerializer();
+                for (String m : rangeList) {
+                    SongMain songMain = jsonSerializer.deserializeForObject(m, SongMain.class);
+                    SongMainList_Cache.add(songMain);
+                }
+            }
+
+            //算出缓存索引位置
+            index = GetListIndex(SongMainList_Cache, SongName, sortDirection,
                     sortExpression);
             rows = index.length;
             if (rows > 0) {
@@ -119,7 +163,13 @@ public class SongMainCache {
             List<SongMain> list = new ArrayList<SongMain>(realcount);
             int count = index.length;
             for (int i = startNum; i <= endNum && i < count; i++) {
-                list.add(SongMainList.get(index[i]));
+                if (cacheType == 1) {
+                    //静态变量
+                    list.add(SongMainList_Cache.get(index[i]));
+                } else {
+                    //redis
+                    list.add((SongMain) jedisExecService.lindex(songMainkey, index[i], SongMain.class));
+                }
             }
 
             // 释放
@@ -208,13 +258,19 @@ public class SongMainCache {
             Collections.sort(SortList, new Comparator<SongMain>() {
                 @Override
                 public int compare(SongMain object1, SongMain object2) {
-                    Date time1 = object1.Stime;
-                    Date time2 = object2.Stime;
+                    try {
+                        Date time1 = object1.Stime;
+                        Date time2 = object2.Stime;
 
-                    if (SortDirection.Desc.getCode().equals(sortDirection))
-                        return time2.compareTo(time1);
-                    else
-                        return time1.compareTo(time2);
+                        if (SortDirection.Desc.getCode().equals(sortDirection))
+                            return time2.compareTo(time1);
+                        else
+                            return time1.compareTo(time2);
+                    } catch (Exception e) {
+                        log.error("对比时间错误", e);
+                    }
+
+                    return 0;
                 }
             });
         }
@@ -267,14 +323,21 @@ public class SongMainCache {
     static boolean isUserDoing = false;
 
     // / <summary>
-    // / 返回所有列表
+    // / 存在不更新缓存
     // / </summary>
     // / <returns></returns>
     private void LoadAllListCache() {
         boolean isFirst = false;
+        boolean isExists = false;
+        //redis缓存
+        isExists = jedisExecService.exists(songMainkey);
+        //本地静态变量
+//        if (SongMainList == null || SongMainList.size() <= 0) {
+//            isExists = false;
+//        }
 
-        // 判断数量
-        if (SongMainList == null || SongMainList.size() <= 0) {
+        // 判断是否首次加载
+        if (!isExists) {
             isFirst = true;
         }
 
@@ -293,13 +356,29 @@ public class SongMainCache {
             try {
                 lock.lock();
 
-                //清空数据
-                SongMainList.clear();
+                //本地索引缓存
                 _listRows.clear();
                 _listIndex.clear();
+                //gc回收
+                System.gc();
 
-                //加载数据
-                SongMainList.addAll(myBatisDaoImpl.getSongMainList());
+                //读取数据库
+                List<SongMain> list = myBatisDaoImpl.getSongMainList();
+
+                if (cacheType == 1) {
+                    //清空本地缓存
+                    SongMainList.clear();
+                    //加载本地缓存
+                    boolean isLocalSave = SongMainList.addAll(list);
+                } else {
+                    //清空redis缓存
+                    jedisExecService.lpush(songMainkey, null);
+                    //加载redis缓存
+                    for (SongMain m : list) {
+                        boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                    }
+                }
+
                 log.info("加载SongMain整表完成!");
             } catch (Exception ex) {
                 log.error("加载SongMain整表:", ex);
@@ -314,7 +393,7 @@ public class SongMainCache {
     }
 
     // / <summary>
-    // / 返回所有列表
+    // / 强制更新缓存
     // / </summary>
     // / <returns></returns>
     private void UpdateAllListCache() {
@@ -334,16 +413,32 @@ public class SongMainCache {
             try {
                 lock.lock();
 
-                //清空数据
-                SongMainList.clear();
+                //本地索引缓存
                 _listRows.clear();
                 _listIndex.clear();
+                //gc回收
+                System.gc();
 
-                //加载数据
-                SongMainList.addAll(myBatisDaoImpl.getSongMainList());
+                //读取数据库
+                List<SongMain> list = myBatisDaoImpl.getSongMainList();
+
+                if (cacheType == 1) {
+                    //清空本地缓存
+                    SongMainList.clear();
+                    //加载本地缓存
+                    boolean isLocalSave = SongMainList.addAll(list);
+                } else {
+                    //清空redis缓存
+                    jedisExecService.lpush(songMainkey, null);
+                    //加载redis缓存
+                    for (SongMain m : list) {
+                        boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                    }
+                }
+                log.info("强制加载SongMain整表完成!");
 
             } catch (Exception ex) {
-                log.error("加载SongMain整表:", ex);
+                log.error("强制加载SongMain整表:", ex);
             } finally {
                 isUserDoing = false;
                 //回收内存

@@ -6,7 +6,7 @@
     <groupId>com.fis.web</groupId>
     <artifactId>new-fis</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <modules>
         <module>new-fis-web</module>
     </modules>
@@ -53,7 +53,9 @@
         <commons-vfs.version>1.0</commons-vfs.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <commons-logging.version>1.1.1</commons-logging.version>
-
+        <!-- 缓存 -->
+        <redis.version>2.6.0</redis.version>
+        <jackson.version>2.2.3</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -306,6 +308,16 @@
                 <version>${commons-vfs.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

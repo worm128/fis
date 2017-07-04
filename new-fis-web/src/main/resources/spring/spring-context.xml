@@ -20,4 +20,6 @@
     <import resource="classpath:/spring/spring-db.xml"/>
     <!-- aop切面 -->
     <aop:aspectj-autoproxy/>
+    <!-- 数据库连接池 -->
+    <import resource="classpath:/redis.xml"/>
 </beans>
