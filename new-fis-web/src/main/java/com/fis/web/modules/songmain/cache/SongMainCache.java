@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SongMainCache {
 
     private static int cacheType = 2;  //1.本地缓存 2.redis缓存
-    private static String songMainkey = "SongMainvv";
+    private static String songMainkey = "SongMainliibb";
     private static List<SongMain> SongMainList = new ArrayList<SongMain>();
 
     private static HashMap<String, Integer[]> _listIndex = new HashMap<String, Integer[]>();
@@ -76,7 +76,7 @@ public class SongMainCache {
             SongMainList.clear();
         } else {
             //清空redis缓存
-            jedisExecService.lpush(songMainkey, null);
+            jedisExecService.rpush(songMainkey, null);
         }
 
         //本地索引缓存
@@ -372,11 +372,11 @@ public class SongMainCache {
                     boolean isLocalSave = SongMainList.addAll(list);
                 } else {
                     //清空redis缓存
-                    jedisExecService.lpush(songMainkey, null);
+                    jedisExecService.rpush(songMainkey, null);
                     //加载redis缓存
                     int rn = 0;
                     for (SongMain m : list) {
-                        boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                        boolean isRedisSave = jedisExecService.rpush(songMainkey, m);
                         log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
                         rn++;
                     }
@@ -430,11 +430,11 @@ public class SongMainCache {
                     boolean isLocalSave = SongMainList.addAll(list);
                 } else {
                     //清空redis缓存
-                    jedisExecService.lpush(songMainkey, null);
+                    jedisExecService.rpush(songMainkey, null);
                     //加载redis缓存
                     int rn = 0;
                     for (SongMain m : list) {
-                        boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                        boolean isRedisSave = jedisExecService.rpush(songMainkey, m);
                         log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
                         rn++;
                     }

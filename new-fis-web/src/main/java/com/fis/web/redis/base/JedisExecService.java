@@ -289,6 +289,25 @@ public class JedisExecService {
         }
     }
 
+    public Boolean rpush(final String id, final Object snapshot) {
+        try {
+            return this.jedisPoolExec.execute(new JedisCallback<Boolean>() {
+                @Override
+                public Boolean execute(Jedis jedis) {
+                    jedis.select(dbIndex);
+                    if (snapshot == null) {
+                        jedis.del(id);
+                    } else {
+                        jedis.rpush(id, jsonSerializer.serialize(snapshot));
+                    }
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            log.error("failed to lpush base Info(key={}) in base,cause:{}", id, Throwables.getStackTraceAsString(e));
+            return false;
+        }
+    }
 
     /**
      * flush session to base
