@@ -174,6 +174,7 @@ public class SongMainCache {
 
             // 释放
             index = null;
+            //gc回收
             System.gc();
 
             SongMainGroup GL = new SongMainGroup();
@@ -185,6 +186,7 @@ public class SongMainCache {
 
         // 释放
         index = null;
+        //gc回收
         System.gc();
 
         SongMainGroup smg = new SongMainGroup();
@@ -239,7 +241,7 @@ public class SongMainCache {
             _SongMainList = null;
 
         } catch (Exception ex) {
-            log.error("App2012.Bll.AppDetailBll.Get_SongMainListIndex():" + ex);
+            log.error("GetListIndex():" + ex);
             return new Integer[0];
         }
         return index;
@@ -359,8 +361,6 @@ public class SongMainCache {
                 //本地索引缓存
                 _listRows.clear();
                 _listIndex.clear();
-                //gc回收
-                System.gc();
 
                 //读取数据库
                 List<SongMain> list = myBatisDaoImpl.getSongMainList();
@@ -374,8 +374,11 @@ public class SongMainCache {
                     //清空redis缓存
                     jedisExecService.lpush(songMainkey, null);
                     //加载redis缓存
+                    int rn = 0;
                     for (SongMain m : list) {
                         boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
+                        rn++;
                     }
                 }
 
@@ -416,8 +419,6 @@ public class SongMainCache {
                 //本地索引缓存
                 _listRows.clear();
                 _listIndex.clear();
-                //gc回收
-                System.gc();
 
                 //读取数据库
                 List<SongMain> list = myBatisDaoImpl.getSongMainList();
@@ -431,10 +432,14 @@ public class SongMainCache {
                     //清空redis缓存
                     jedisExecService.lpush(songMainkey, null);
                     //加载redis缓存
+                    int rn = 0;
                     for (SongMain m : list) {
                         boolean isRedisSave = jedisExecService.lpush(songMainkey, m);
+                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
+                        rn++;
                     }
                 }
+
                 log.info("强制加载SongMain整表完成!");
 
             } catch (Exception ex) {

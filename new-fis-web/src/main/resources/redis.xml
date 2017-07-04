@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="jedisExecService" class="com.fis.web.redis.base.JedisExecService">
+        <property name="dbIndex" value="2"/>
+        <property name="jedisPoolExec" ref="jedisPoolExec" />
+
+    </bean>
+    <bean id="jedisPoolExec" class="com.fis.web.redis.base.JedisPoolExec">
+        <property name="jedisProperty" ref="jedisProperty" />
+    </bean>
+    <bean id="jedisProperty" class="com.fis.web.redis.util.JedisProperty">
+        <property name="maxActive" value="50" />
+        <property name="maxIdle" value="10" />
+        <property name="standAloneHost" value="192.168.235.134" />
+        <property name="standAlonePort" value="6379" />     
+        <property name="mode" value="cluster" />
+        <property name="masterName" value="" />
+        <property name="sentinelHosts" value="192.168.235.134:26379,192.168.235.134:26380" />
+        <property name="masterHost" value="192.168.235.134" />
+        <property name="masterPort" value="6379" />
+        <property name="timeout" value="10000"/>
+    </bean>
+
+</beans>
