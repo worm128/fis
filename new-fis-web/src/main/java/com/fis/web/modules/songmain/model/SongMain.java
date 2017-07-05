@@ -1,9 +1,14 @@
 package com.fis.web.modules.songmain.model;
 
+import lombok.Data;
+import lombok.ToString;
+
+import java.io.Serializable;
 import java.util.Date;
 
-
-public class SongMain{
+@Data
+@ToString(callSuper = true)
+public class SongMain implements Serializable {
 	
 	
 	public Integer SongID;
@@ -22,63 +27,6 @@ public class SongMain{
 	
 	public String KeyWord;
 	
-	public Integer IDRank;
+	public Integer IdRank;
 
-	
-	public Integer getSongID() {
-		return SongID;
-	}
-	public void setSongID(Integer songID) {
-		SongID = songID;
-	}
-	public Integer getSpecID() {
-		return SpecID;
-	}
-	public void setSpecID(Integer specID) {
-		SpecID = specID;
-	}
-	public Integer getSingerID() {
-		return SingerID;
-	}
-	public void setSingerID(Integer singerID) {
-		SingerID = singerID;
-	}
-	public String getSongName() {
-		return SongName;
-	}
-	public void setSongName(String songName) {
-		SongName = songName;
-	}
-	public String getDownUrl() {
-		return DownUrl;
-	}
-	public void setDownUrl(String downUrl) {
-		DownUrl = downUrl;
-	}
-	public Date getStime() {
-		return Stime;
-	}
-	public void setStime(Date stime) {
-		Stime = stime;
-	}
-	public Integer getSortNum() {
-		return SortNum;
-	}
-	public void setSortNum(Integer sortNum) {
-		SortNum = sortNum;
-	}
-	public String getKeyWord() {
-		return KeyWord;
-	}
-	public void setKeyWord(String keyWord) {
-		KeyWord = keyWord;
-	}
-	public Integer getIDRank() {
-		return IDRank;
-	}
-	public void setIDRank(Integer iDRank) {
-		IDRank = iDRank;
-	}
-	
-	
 }

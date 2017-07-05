@@ -19,8 +19,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SongMainCache {
 
-    private static int cacheType = 1;  //1.本地缓存 2.redis缓存
-    private static String songMainkey = "SongMainliibb";
+    private static int cacheType = 2;  //1.本地缓存 2.redis缓存
+    private static String songMainkey = "SongMain";
     private static List<SongMain> SongMainList = new ArrayList<SongMain>();
 
     private static HashMap<String, Integer[]> _listIndex = new HashMap<String, Integer[]>();
@@ -229,8 +229,8 @@ public class SongMainCache {
                 index = new Integer[rows];
                 // 循环添加索引
                 for (SongMain songmod : _SongMainList) {
-                    // _log.Info("XuanFtypeList.Bll.AddIndex_IDRank_"+gameMod.IDRank);
-                    index[w] = songmod.IDRank;
+                    // _log.Info("XuanFtypeList.Bll.AddIndex_IdRank_"+gameMod.IdRank);
+                    index[w] = songmod.IdRank;
                     w++;
                 }
             } else {
@@ -381,7 +381,7 @@ public class SongMainCache {
                     int rn = 0;
                     for (SongMain m : list) {
                         boolean isRedisSave = jedisExecService.rpush(songMainkey, m);
-                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
+                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIdRank());
                         rn++;
                     }
                 }
@@ -439,7 +439,7 @@ public class SongMainCache {
                     int rn = 0;
                     for (SongMain m : list) {
                         boolean isRedisSave = jedisExecService.rpush(songMainkey, m);
-                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIDRank());
+                        log.info("设置到redis的行:{},实体索引,{}", rn, m.getIdRank());
                         rn++;
                     }
                 }
