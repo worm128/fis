@@ -92,6 +92,14 @@ public class SongMainCache {
     // / <returns></returns>
     public SongMainGroup GetAllCache(int pageNow, int pageSize,
                                      String SongName, String sortDirection, String sortExpression) {
+
+        //如果有数据在加载，则需要等待数据加载完毕，数据不完整不能读取制作索引
+        if (isUserDoing) {
+            SongMainGroup smg = new SongMainGroup();
+            smg.SongMainList = new ArrayList<SongMain>();
+            return smg;
+        }
+
         Integer[] index = null;
         Integer rows = 0;
         Boolean isExists = false;
