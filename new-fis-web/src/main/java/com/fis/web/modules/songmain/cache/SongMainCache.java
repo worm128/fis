@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SongMainCache {
 
-    private static int cacheType = 2;  //1.本地缓存 2.redis缓存
+    private static int cacheType = 1;  //1.本地缓存 2.redis缓存
     private static String songMainkey = "SongMainliibb";
     private static List<SongMain> SongMainList = new ArrayList<SongMain>();
 
@@ -95,12 +95,11 @@ public class SongMainCache {
         Integer[] index = null;
         Integer rows = 0;
         Boolean isExists = false;
-        List<SongMain> SongMainList_Cache = null;
 
         if (cacheType == 1) {
             //本地静态变量
-            if (SongMainList == null || SongMainList.size() <= 0) {
-                isExists = false;
+            if (SongMainList != null && SongMainList.size() > 0) {
+                isExists = true;
             }
         } else {
             //redis缓存
@@ -124,7 +123,7 @@ public class SongMainCache {
         if (index != null && index.length > 0) {
             rows = _listRows.get(rowsKey);
         } else {
-            SongMainList_Cache = new ArrayList<SongMain>();
+            List<SongMain> SongMainList_Cache = null;
             if (cacheType == 1) {
                 //本地静态变量
                 SongMainList_Cache = SongMainList;
@@ -133,6 +132,7 @@ public class SongMainCache {
                 //redis缓存
                 List<String> rangeList = jedisExecService.lrange(songMainkey, 0, 99999);
                 JsonSerializer jsonSerializer = new JsonSerializer();
+                SongMainList_Cache = new ArrayList<SongMain>();
                 for (String m : rangeList) {
                     SongMain songMain = jsonSerializer.deserializeForObject(m, SongMain.class);
                     SongMainList_Cache.add(songMain);
@@ -165,7 +165,7 @@ public class SongMainCache {
             for (int i = startNum; i <= endNum && i < count; i++) {
                 if (cacheType == 1) {
                     //静态变量
-                    list.add(SongMainList_Cache.get(index[i]));
+                    list.add(SongMainList.get(index[i]));
                 } else {
                     //redis
                     list.add((SongMain) jedisExecService.lindex(songMainkey, index[i], SongMain.class));
@@ -331,12 +331,16 @@ public class SongMainCache {
     private void LoadAllListCache() {
         boolean isFirst = false;
         boolean isExists = false;
-        //redis缓存
-        isExists = jedisExecService.exists(songMainkey);
-        //本地静态变量
-//        if (SongMainList == null || SongMainList.size() <= 0) {
-//            isExists = false;
-//        }
+
+        if (cacheType == 1) {
+            //本地静态变量
+            if (SongMainList != null && SongMainList.size() > 0) {
+                isExists = true;
+            }
+        } else {
+            //redis缓存
+            isExists = jedisExecService.exists(songMainkey);
+        }
 
         // 判断是否首次加载
         if (!isExists) {
