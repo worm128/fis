@@ -10,7 +10,7 @@
         </filter>
         <file>${logRoot}/new-fis.log</file>
         <encoder>
-            <pattern>%date %level [%thread] [%logger{0}] %msg%n</pattern>
+            <pattern>%date %level [%thread] [%logger{0}] %msg%n trceid</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->

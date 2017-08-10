@@ -21,7 +21,7 @@
 
 <c:forEach items="${list}" var="aa">
 	歌名:${aa.songName}，发布时间:<fmt:formatDate value="${aa.stime}" type="date" pattern="yyyy-MM-dd HH:mm"/>
-	自定义排序:${aa.sortNum}<br/>
+	自定义排序:${aa.sortNum},idRank:${aa.idRank}<br/>
 </c:forEach>
 
 总条数:${total},当前页:${pg},一页大小:${pgsize}<br/><br/>
