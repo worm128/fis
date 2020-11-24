@@ -214,24 +214,24 @@
                 </configuration>
                 <version>2.6</version>
             </plugin>
-            <plugin>
-                <!--autoconfg插件具体使用指南可以找应用运维组索取文档，不在使用使用环境变量profile的方式-->
-                <groupId>com.alibaba.citrus.tool</groupId>
-                <artifactId>autoconfig-maven-plugin</artifactId>
-                <version>${autoconfig-plugin-version}</version>
-                <configuration>
-                    <charset>UTF-8</charset>
-                    <dest>${project.artifact.file}</dest>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>autoconfig</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                &lt;!&ndash;autoconfg插件具体使用指南可以找应用运维组索取文档，不在使用使用环境变量profile的方式&ndash;&gt;-->
+<!--                <groupId>com.alibaba.citrus.tool</groupId>-->
+<!--                <artifactId>autoconfig-maven-plugin</artifactId>-->
+<!--                <version>${autoconfig-plugin-version}</version>-->
+<!--                <configuration>-->
+<!--                    <charset>UTF-8</charset>-->
+<!--                    <dest>${project.artifact.file}</dest>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>autoconfig</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

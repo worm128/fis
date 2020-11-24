@@ -14,12 +14,12 @@
     <bean id="jedisProperty" class="com.fis.web.redis.util.JedisProperty">
         <property name="maxActive" value="50" />
         <property name="maxIdle" value="10" />
-        <property name="standAloneHost" value="192.168.235.134" />
+        <property name="standAloneHost" value="192.168.211.43" />
         <property name="standAlonePort" value="6379" />     
-        <property name="mode" value="cluster" />
+        <property name="mode" value="standAlone" />
         <property name="masterName" value="" />
-        <property name="sentinelHosts" value="192.168.235.134:26379,192.168.235.134:26380" />
-        <property name="masterHost" value="192.168.235.134" />
+        <property name="sentinelHosts" value="192.168.211.43:26379,192.168.211.43:26380" />
+        <property name="masterHost" value="192.168.211.43" />
         <property name="masterPort" value="6379" />
         <property name="timeout" value="10000"/>
     </bean>

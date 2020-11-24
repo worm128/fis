@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SongMainCache {
 
-    private static int cacheType = 2;  //1.本地缓存 2.redis缓存
+    private static int cacheType = 1;  //1.本地缓存 2.redis缓存
     private static String songMainkey = "SongMain";
     private static List<SongMain> SongMainList = new ArrayList<SongMain>();
 
